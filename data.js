@@ -2,8 +2,8 @@ import { v4 as uuidv4 } from 'https://jspm.dev/uuid';
 
  export const tweetsArray = [
     {
-        name: 'Laurentiu Robu',
-        handle: '@LaurentiuR',
+        name: 'maria Swarez',
+        handle: '@mariaSZ',
         avatar: "images/natalya-ukolova-BJZNEuuAbpg-unsplash.jpg" ,
         content:  'Some tweet content',
         isLiked: false, 
@@ -14,7 +14,7 @@ import { v4 as uuidv4 } from 'https://jspm.dev/uuid';
             {
                 name: 'John Doe',
                 handle: '@johndoe',
-                avatar: 'avatar2.jpg',
+                avatar: 'images/avatar2.jpg',
                 content: 'Reply to the tweet',
                 isLiked: false,
                 isRetweeted: false,
@@ -38,7 +38,7 @@ import { v4 as uuidv4 } from 'https://jspm.dev/uuid';
             {
                 name: 'Jane Doe',
                 handle: '@janedoe',
-                avatar: 'avatar4.jpg',
+                avatar: 'images/avatar4.jpg',
                 content: 'Reply to Emily',
                 isLiked: false,
                 isRetweeted: false,
@@ -49,7 +49,7 @@ import { v4 as uuidv4 } from 'https://jspm.dev/uuid';
             {
                 name: 'John Smith',
                 handle: '@johnsmith',
-                avatar: 'avatar5.jpg',
+                avatar: 'images/avatar5.jpg',
                 content: 'Another reply',
                 isLiked: true,
                 isRetweeted: true,
@@ -86,7 +86,7 @@ import { v4 as uuidv4 } from 'https://jspm.dev/uuid';
             {
                 name: 'Chris Davis',
                 handle: '@chrisdavis',
-                avatar: 'avatar8.jpg',
+                avatar: 'images/avatar8.jpg',
                 content: 'Great tweet!',
                 isLiked: true,
                 isRetweeted: false,
@@ -97,7 +97,7 @@ import { v4 as uuidv4 } from 'https://jspm.dev/uuid';
             {
                 name: 'Emma Wilson',
                 handle: '@emmawilson',
-                avatar: 'avatar9.jpg',
+                avatar: 'images/avatar9.jpg',
                 content: 'I agree!',
                 isLiked: true,
                 isRetweeted: false,

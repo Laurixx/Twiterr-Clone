@@ -1,5 +1,6 @@
 import { tweetsArray } from "./data.js";
 import { user } from "./user-info.js"
+import { v4 as uuidv4 } from 'https://jspm.dev/uuid';
 
 document.addEventListener('click', function(e){
 console.log(e.target.dataset);
@@ -12,11 +13,25 @@ console.log(e.target.dataset);
     if(e.target.dataset.reply){
         reply(e.target.dataset.reply)
     }
+    if(e.target.dataset.likeReply){
+        likeReply(e.target.dataset.likeReply)
+    }
+    if(e.target.id === 'tweet-btn'){
+        addtweet()
+    }
 })
 
 function createFeedHtml(){
 
     let feedHtml = ''
+    let userInputReply = `
+    <div id="user-input">
+    <div class="textare">
+        <img src="${user.avatar}" alt="">
+        <textarea id="text-inp-reply" placeholder="Whats happening?"></textarea>
+    </div>
+    <button id="tweet-btn">Tweet</button>
+</div>`
 
     let userInput = `
     <div id="user-input">
@@ -54,7 +69,7 @@ let replySolid = ''
 
     let createReply = ''
     tweet.replies.forEach(function(reply){
-        createReply = `
+        createReply += `
         <div class="reply">
     <div class="inner-tweet">
         <div class="avatar">
@@ -69,8 +84,8 @@ let replySolid = ''
                 <p>${reply.content}</p>
             </div>
             <div class="interactions">
-            <div class="actions"><span class =" ${shareClass}">${reply.retweets}</span><i class="fa-solid fa-retweet ${shareClass}" data-retweet="${reply.uuid}"></i></div>
-            <div class="actions"><span class = "${replyLikeClass}">${reply.likes}</span><i class="fa-regular fa-heart ${replyLikeClass} ${replySolid}" data-like="${reply.uuid}"></i></div>
+            <div class="actions"><span class =" ${shareClass}">${reply.retweets}</span><i class="fa-solid fa-retweet ${shareClass}" data-retweet-reply="${reply.uuid}"></i></div>
+            <div class="actions"><span class = "${replyLikeClass}">${reply.likes}</span><i class="fa-regular fa-heart ${replyLikeClass} ${replySolid}" data-like-reply="${reply.uuid}"></i></div>
         </div>
         </div>
     </div>
@@ -111,6 +126,25 @@ return feedHtml
 
 
 
+function addtweet (){
+    let createTweet = {}
+   const textInp = document.getElementById('text-inp')
+   createTweet = {
+    name: `${user.name}`,
+    handle: `${user.handle}`,
+    avatar: `${user.avatar}`,
+    content: `${textInp.value}`,
+    isLiked: false,
+    isRetweeted: false,
+    likes: 0,
+    retweets: 0,
+    replies: [],
+    uuid: uuidv4()
+},
+tweetsArray.unshift(createTweet)
+render()
+   }
+
 function like(tweetId){
     const targetTweet = tweetsArray.filter(function(tweet){
         return tweet.uuid === tweetId
@@ -148,6 +182,16 @@ function reply (tweetId){
  })[0]
     document.getElementById(`replies-${tweetId}`).classList.toggle('hidden')
 
+}
+
+function likeReply(replyId){
+    const targetTweet = tweetsArray.filter(function (tweet){
+        const targetReply = tweet.replies.filter(function(reply){
+            return reply.uuid === replyId
+        })[0]  
+
+        console.log(targetReply);
+    })
 }
 function render(){
     document.getElementById('feed').innerHTML =createFeedHtml()
