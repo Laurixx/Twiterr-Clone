@@ -25,21 +25,21 @@ function createFeedHtml(){
 
     let feedHtml = ''
     let userInputReply = `
-    <div id="user-input">
-    <div class="textare">
-        <img src="${user.avatar}" alt="">
-        <textarea id="text-inp-reply" placeholder="Whats happening?"></textarea>
+    <div id="user-input" class="reply-input border">
+    <div class="tex">
+        <img src="${user.avatar}" alt="" class="avatar" >
+        <textarea id="text-inp-reply" placeholder="Tweet your reply!"></textarea>
     </div>
-    <button id="tweet-btn">Tweet</button>
+    <button id="tweet-btn" class="tweet-btn">Tweet</button>
 </div>`
 
     let userInput = `
-    <div id="user-input">
-    <div class="textare">
-        <img src="${user.avatar}" alt="">
-        <textarea id="text-inp" placeholder="Whats happening?"></textarea>
+    <div id="user-input" class="user-input">
+    <div class="tex">
+        <img src="${user.avatar}" alt="" class="avatar">
+        <textarea id="text-inp" placeholder="Whats happening?!"></textarea>
     </div>
-    <button id="tweet-btn">Tweet</button>
+    <button id="tweet-btn" class="tweet-btn">Tweet</button>
 </div>`
 feedHtml = userInput 
 
@@ -59,33 +59,36 @@ tweetsArray.forEach(function(tweet){
     }
 let replyLikeClass = ''
 let replySolid = ''
-  
+let replyShared = ''
     tweet.replies.forEach(function(reply){
         if(reply.isLiked){
             replyLikeClass = 'liked'
             replySolid = 'fa-solid'
+        }
+        if(reply.isRetweeted){
+            replyShared = 'shared'
         }
     })
 
     let createReply = ''
     tweet.replies.forEach(function(reply){
         createReply += `
-        <div class="reply">
+        <div class="reply border">
     <div class="inner-tweet">
         <div class="avatar">
-            <img src="${reply.avatar}" alt="">
+            <img src="${reply.avatar}" alt="" >
         </div>
         <div class="inner">
             <div class="handle-name">
                 <span>${reply.name}</span>
-                <span>${reply.handle}</span>
+                <span class="italic-small">${reply.handle}</span>
             </div>
             <div class="content">
                 <p>${reply.content}</p>
             </div>
             <div class="interactions">
-            <div class="actions"><span class =" ${shareClass}">${reply.retweets}</span><i class="fa-solid fa-retweet ${shareClass}" data-retweet-reply="${reply.uuid}"></i></div>
-            <div class="actions"><span class = "${replyLikeClass}">${reply.likes}</span><i class="fa-regular fa-heart ${replyLikeClass} ${replySolid}" data-like-reply="${reply.uuid}"></i></div>
+            <div class="action-retweet"><span class ="${replyShared}">${reply.retweets}</span><i class="fa-solid fa-retweet ${replyShared}" data-retweet-reply="${reply.uuid}"></i></div>
+            <div class="action-like"><span class = "${replyLikeClass}">${reply.likes}</span><i class="fa-regular fa-heart ${replyLikeClass} ${replySolid}" data-like-reply="${reply.uuid}"></i></div>
         </div>
         </div>
     </div>
@@ -102,19 +105,20 @@ let replySolid = ''
         <div class="inner">
             <div class="handle-name">
                 <span>${tweet.name}</span>
-                <span>${tweet.handle}</span>
+                <span class="italic-small">${tweet.handle}</span>
             </div>
             <div class="content">
                 <p>${tweet.content}</p>
             </div>
             <div class="interactions">
-                <div class="actions"><span>${tweet.replies.length}</span><i class="fa-regular fa-message  " data-reply="${tweet.uuid}"></i></div>
-                <div class="actions"><span class =" ${shareClass}">${tweet.retweets}</span><i class="fa-solid fa-retweet ${shareClass}" data-retweet="${tweet.uuid}"></i></div>
-                <div class="actions"><span class = "${likeClass}">${tweet.likes}</span><i class="fa-regular fa-heart ${likeClass} ${solid}" data-like="${tweet.uuid}"></i></div>
+                <div class="action-reply"><span>${tweet.replies.length}</span><i class="fa-regular fa-message  " data-reply="${tweet.uuid}"></i></div>
+                <div class="action-retweet"><span class =" ${shareClass}">${tweet.retweets}</span><i class="fa-solid fa-retweet ${shareClass}" data-retweet="${tweet.uuid}"></i></div>
+                <div class="action-like "><span class = "${likeClass}">${tweet.likes}</span><i class="fa-regular fa-heart ${likeClass} ${solid}" data-like="${tweet.uuid}"></i></div>
             </div>
         </div>
     </div>
     <div id="replies-${tweet.uuid}" class="hidden">
+    ${userInputReply}
     ${createReply}
     </div>
 </article>
