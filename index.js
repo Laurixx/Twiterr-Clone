@@ -1,9 +1,15 @@
+// make it that when you reply to a reply , it gets added to the replies array DONE
+// fix the add tweet function so if it empty dont tweet DONE
+// also try to make it a modal but dont stress if it doenst work 
+// comment and scan all js
+
+
 import { tweetsArray } from "./data.js";
 import { user } from "./user-info.js"
 import { v4 as uuidv4 } from 'https://jspm.dev/uuid';
 
 document.addEventListener('click', function(e){
-console.log(e.target.dataset);
+   console.log(e.target.dataset);
     if(e.target.dataset.like){
         like(e.target.dataset.like)
     }
@@ -13,25 +19,22 @@ console.log(e.target.dataset);
     if(e.target.dataset.reply){
         reply(e.target.dataset.reply)
     }
-    if(e.target.dataset.likeReply){
-        likeReply(e.target.dataset.likeReply)
-    }
+ 
     if(e.target.id === 'tweet-btn'){
         addtweet()
+    }
+    if(e.target.id === 'reply-btn'){
+        addReply(e.target.dataset.replyBtn)
+    }
+    if(e.target.dataset.likeReply){
+        addLikeReply(e.target.dataset.reply,e.target.dataset.likeReply)
     }
 })
 
 function createFeedHtml(){
 
     let feedHtml = ''
-    let userInputReply = `
-    <div id="user-input" class="reply-input border">
-    <div class="tex">
-        <img src="${user.avatar}" alt="" class="avatar" >
-        <textarea id="text-inp-reply" placeholder="Tweet your reply!"></textarea>
-    </div>
-    <button id="tweet-btn" class="tweet-btn">Tweet</button>
-</div>`
+
 
     let userInput = `
     <div id="user-input" class="user-input">
@@ -45,6 +48,15 @@ feedHtml = userInput
 
 let createTweet = ``
 tweetsArray.forEach(function(tweet){
+
+    let userInputReply = `
+    <div id="user-input" class="reply-input border">
+    <div class="tex">
+        <img src="${user.avatar}" alt="" class="avatar" >
+        <textarea id="text-inp-reply" placeholder="Tweet your reply!"></textarea>
+    </div>
+    <button id="reply-btn" class="tweet-btn" data-reply-btn="${tweet.uuid}">Reply</button>
+</div>`
 
     let shareClass = ''
     if(tweet.isRetweeted){
@@ -111,9 +123,9 @@ let replyShared = ''
                 <p>${tweet.content}</p>
             </div>
             <div class="interactions">
-                <div class="action-reply"><span>${tweet.replies.length}</span><i class="fa-regular fa-message  " data-reply="${tweet.uuid}"></i></div>
-                <div class="action-retweet"><span class =" ${shareClass}">${tweet.retweets}</span><i class="fa-solid fa-retweet ${shareClass}" data-retweet="${tweet.uuid}"></i></div>
-                <div class="action-like "><span class = "${likeClass}">${tweet.likes}</span><i class="fa-regular fa-heart ${likeClass} ${solid}" data-like="${tweet.uuid}"></i></div>
+                <div class="action-reply"><span data-reply="${tweet.uuid}">${tweet.replies.length}</span><i class="fa-regular fa-message" data-reply="${tweet.uuid}"></i></div>
+                <div class="action-retweet"><span class =" ${shareClass}"data-retweet="${tweet.uuid}">${tweet.retweets}</span><i class="fa-solid fa-retweet ${shareClass}" data-retweet="${tweet.uuid}"></i></div>
+                <div class="action-like "><span class = "${likeClass}" data-like="${tweet.uuid}">${tweet.likes}</span><i class="fa-regular fa-heart ${likeClass} ${solid}" data-like="${tweet.uuid}"></i></div>
             </div>
         </div>
     </div>
@@ -144,9 +156,13 @@ function addtweet (){
     retweets: 0,
     replies: [],
     uuid: uuidv4()
-},
-tweetsArray.unshift(createTweet)
-render()
+}
+
+ if(textInp.value){
+    tweetsArray.unshift(createTweet)
+    render()
+ }
+
    }
 
 function like(tweetId){
@@ -187,15 +203,37 @@ function reply (tweetId){
     document.getElementById(`replies-${tweetId}`).classList.toggle('hidden')
 
 }
+function addLikeReply(tweetId,replyId){
+  const targetTweet = tweetsArray.filter(function(tweet){
+    return tweet.uuid === tweetId
+  })[0]
+  targetTweet.replies.filter(function(reply){
+    return reply.uuid === replyId
+  })[0]
+console.log(targetReply);
+}
 
-function likeReply(replyId){
-    const targetTweet = tweetsArray.filter(function (tweet){
-        const targetReply = tweet.replies.filter(function(reply){
-            return reply.uuid === replyId
-        })[0]  
-
-        console.log(targetReply);
-    })
+function addReply (tweetId){
+    const targetTweet = tweetsArray.filter(function(tweet){
+        return tweet.uuid === tweetId
+})[0]
+  let createReply = {}
+const replyInp = document.getElementById('text-inp-reply').value
+    createReply = {
+        name: `${user.name}`,
+        handle: `${user.handle}` ,
+        avatar: `${user.avatar}`,
+        content: `${replyInp}`,
+        isLiked: false,
+        isRetweeted: false,
+        likes: 0,
+        retweets: 0,
+        uuid: uuidv4()
+    }
+    if(replyInp){
+        targetTweet.replies.unshift(createReply)
+        render()
+    }
 }
 function render(){
     document.getElementById('feed').innerHTML =createFeedHtml()
