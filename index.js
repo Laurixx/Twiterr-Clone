@@ -1,4 +1,4 @@
-// make it that when you reply to a reply , it gets added to the replies array DONE
+// make it that when you reply to a tweet , it gets added to the replies array DONE
 // fix the add tweet function so if it empty dont tweet DONE
 // also try to make it a modal but dont stress if it doenst work 
 // comment and scan all js
@@ -27,8 +27,9 @@ document.addEventListener('click', function(e){
         addReply(e.target.dataset.replyBtn)
     }
     if(e.target.dataset.likeReply){
-        addLikeReply(e.target.dataset.reply,e.target.dataset.likeReply)
-    }
+        likeReply(e.target.dataset.likeReply)
+    }if(e.target.dataset.retweetReply)
+    retweetReply(e.target.dataset.retweetReply)
 })
 
 function createFeedHtml(){
@@ -53,7 +54,7 @@ tweetsArray.forEach(function(tweet){
     <div id="user-input" class="reply-input border">
     <div class="tex">
         <img src="${user.avatar}" alt="" class="avatar" >
-        <textarea id="text-inp-reply" placeholder="Tweet your reply!"></textarea>
+        <textarea id="reply-${tweet.uuid}" placeholder="Tweet your reply!"></textarea>
     </div>
     <button id="reply-btn" class="tweet-btn" data-reply-btn="${tweet.uuid}">Reply</button>
 </div>`
@@ -69,10 +70,14 @@ tweetsArray.forEach(function(tweet){
         likeClass = 'liked'
         solid = 'fa-solid'
     }
-let replyLikeClass = ''
-let replySolid = ''
-let replyShared = ''
+// THIS CHANGES COLOR ON THE REPLIES WHEN THEY ARE LIKED AND RETWETED 
+
+    let createReply = ''
     tweet.replies.forEach(function(reply){
+        let replyLikeClass = ''
+        let replySolid = ''
+        let replyShared = ''
+        
         if(reply.isLiked){
             replyLikeClass = 'liked'
             replySolid = 'fa-solid'
@@ -80,10 +85,7 @@ let replyShared = ''
         if(reply.isRetweeted){
             replyShared = 'shared'
         }
-    })
 
-    let createReply = ''
-    tweet.replies.forEach(function(reply){
         createReply += `
         <div class="reply border">
     <div class="inner-tweet">
@@ -203,22 +205,13 @@ function reply (tweetId){
     document.getElementById(`replies-${tweetId}`).classList.toggle('hidden')
 
 }
-function addLikeReply(tweetId,replyId){
-  const targetTweet = tweetsArray.filter(function(tweet){
-    return tweet.uuid === tweetId
-  })[0]
-  targetTweet.replies.filter(function(reply){
-    return reply.uuid === replyId
-  })[0]
-console.log(targetReply);
-}
 
 function addReply (tweetId){
     const targetTweet = tweetsArray.filter(function(tweet){
         return tweet.uuid === tweetId
 })[0]
   let createReply = {}
-const replyInp = document.getElementById('text-inp-reply').value
+const replyInp = document.getElementById(`reply-${tweetId}`).value
     createReply = {
         name: `${user.name}`,
         handle: `${user.handle}` ,
@@ -234,6 +227,53 @@ const replyInp = document.getElementById('text-inp-reply').value
         targetTweet.replies.unshift(createReply)
         render()
     }
+}
+
+function likeReply(replyId) {
+    const targetReply = tweetsArray.find((tweet) => {
+      return tweet.replies.find((reply) => {
+        return reply.uuid === replyId;
+      });
+    });
+  
+    if (targetReply) {
+      const replyToLike = targetReply.replies.find((reply) => {
+        return reply.uuid === replyId;
+      });
+  
+      if (replyToLike.isLiked) {
+        replyToLike.likes--;
+      
+      } else {
+        replyToLike.likes++;
+        console.log(replyToLike);
+      }
+  
+      replyToLike.isLiked = !replyToLike.isLiked;
+    }
+render()
+  }
+function retweetReply (replyId){
+    const targetTweet = tweetsArray.find((tweet) => {
+        return tweet.replies.find((reply) => {
+            return reply.uuid === replyId
+        })
+    })
+    console.log(targetTweet);
+
+    if(targetTweet){
+        const replyToRetweet = targetTweet.replies.find((reply) => {
+            return reply.uuid === replyId
+        })
+        if(replyToRetweet.isRetweeted){
+            replyToRetweet.retweets--
+        }else{
+            replyToRetweet.retweets++
+        }
+        replyToRetweet.isRetweeted = !replyToRetweet.isRetweeted
+        console.log(replyToRetweet);
+    }
+    render()
 }
 function render(){
     document.getElementById('feed').innerHTML =createFeedHtml()
