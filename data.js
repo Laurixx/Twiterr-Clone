@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'https://jspm.dev/uuid';
 
- export const tweetsArray = [
+ export const tweetsArrayData = [
     {
         name: 'maria Swarez',
         handle: '@mariaSZ',

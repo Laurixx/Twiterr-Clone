@@ -51,6 +51,10 @@ img{
     font-family: 'Roboto', sans-serif;  
     border-radius: 25px;
 }
+.tweet-btn-inactive{
+    background-color:#056774;
+
+}
 
 .reply-input .tweet-btn{
     display:block;
